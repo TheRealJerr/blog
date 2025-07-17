@@ -4,7 +4,6 @@
 // 没有路径压缩的简单的并查集
 
 
-
 class UnionFindSet
 {
 public:
@@ -19,8 +18,12 @@ public:
         int root_x1 = findRoot(x1);
         int root_x2 = findRoot(x2);
         // 合并两个根
-        _ufs[root_x2] += _ufs[root_x1];
-        _ufs[root_x1] = root_x2;     
+        if(root_x1 != root_x2)
+        {
+            _ufs[root_x1] += _ufs[root_x2];
+            _ufs[root_x2] = root_x1;
+        }        
+        
     }
     // 获取根
     int findRoot(int x) const
