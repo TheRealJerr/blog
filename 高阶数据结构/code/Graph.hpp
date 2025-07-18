@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <map>
-
-#define __GRAPH_TABLE__
+#include <queue>
+#define __GRAPH_MATRIX__
 // 领接矩阵
 
 #ifdef __GRAPH_MATRIX__
@@ -54,6 +54,66 @@ public:
                 std::cout << val << " ";
             std::cout << std::endl;
         }
+        
+    }
+
+    void BFS(const V& begin)
+    {
+        if(_indexMap.count(begin) == false) 
+        {
+            throw std::invalid_argument("没有该数据");
+            return;
+        }
+        
+        int cur = _indexMap[begin];
+        std::queue<int> q;
+        std::vector<bool> used(_vertexs.size(), false);
+        q.push(cur);
+        used[cur] = true;
+        int step = 0;
+        while(q.size())
+        {
+            int sz = q.size();
+            std::cout << "第" << step << "层" << std::endl;
+            for(int i = 0;i < sz;i++)
+            {
+                cur = q.front();
+                q.pop();
+                std::cout << _vertexs[cur] << std::endl;
+                for(int j = 0;j < _matrix[cur].size();j++)
+                {
+                    if(_matrix[cur][j] != __INT32_MAX__ && !used[j])
+                    {
+                        q.push(j);
+                        used[j] = true;
+                    }
+                }
+            }
+            ++step;
+        }
+
+    }
+
+    // * step : 代表所处的层数
+    void DFSHelper(int pos, std::vector<bool>& used)
+    {
+        used[pos] = true;
+        std::cout << _vertexs[pos] << std::endl;
+        for(decltype(_matrix[pos].size()) j = 0;j < _matrix[pos].size();j++)
+        {
+            if(_matrix[pos][j] != __INT32_MAX__ && used[j] == false)
+                DFSHelper(j, used);
+        }
+    }
+    void DFS(const V& val)
+    {
+        if(_indexMap.count(val) == false) 
+        {
+            throw std::invalid_argument("不含有该值");
+            return;
+        }
+        std::vector<bool> used(_vertexs.size(), false);
+        DFSHelper(_indexMap[val], used);
     }
 private:
     std::vector<V> _vertexs;
