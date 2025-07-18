@@ -33,7 +33,7 @@ public:
     {
         auto tmp = x;
         while(_ufs[tmp] >= 0) tmp = _ufs[tmp];
-
+        // 路径压缩
         auto t = x;
         while(t != tmp)
         {

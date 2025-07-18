@@ -67,13 +67,69 @@ private:
 #ifdef __GRAPH_TABLE__
 
 // 领接表
+template <class W>
+struct Edge
+{
+    Edge(int src,int dst, W wage)
+        : _src(src), _dst(dst), _wage(wage)
+    {}
+    int _src;
+    int _dst; // 目标点的下标
+    W _wage; 
 
+    Edge<W>* _next = nullptr;
+};
+
+template <class V,class W, bool Direction = false>
 class Graph
 {
 public:
+    using EdgeType = Edge<W>;
+    Graph(const V* a, int n)
+    {
+        for(int i = 0;i < n;i++)
+        {
+            _datas.push_back(a[i]);
+            _indexMap[a[i]] = i;
+        }
+        _edges.resize(n, nullptr);
+    }
+    void addEdge(const V& src,const V& dst,W w)
+    {
+        auto index1 = _indexMap[src];
+        auto index2 = _indexMap[dst];
+        // 判断是有向还是无向
+        EdgeType* edge = new EdgeType(index1, index2, w);
+        edge->_next = _edges[index1];
+        _edges[index1] = edge;
 
-    
-private:
+        if(!Direction)
+        {
+            EdgeType* redge = new EdgeType(index2, index1, w);
+            redge->_next = _edges[index2];
+            _edges[index2] = redge;
+        }
+    }
+
+    void printTable()
+    {
+        for(size_t i = 0;i < _edges.size(); i++)
+        {
+            EdgeType* ptr = _edges[i];
+            std::cout << "value:" << _datas[i] << std::endl;
+            while(ptr)
+            {
+                std::cout << "[" << ptr->_src << "] -> " << ptr->_dst << std::endl; 
+                ptr = ptr->_next;
+            }
+            std::cout << std::endl;
+        }
+    }
+private:    
+
+    std::vector<V> _datas;
+    std::map<V,int> _indexMap;
+    std::vector<EdgeType*> _edges;
 };
 
 #endif
