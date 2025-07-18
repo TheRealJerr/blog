@@ -17,7 +17,9 @@ public:
         // 找到两个数的根
         int root_x1 = findRoot(x1);
         int root_x2 = findRoot(x2);
-        // 合并两个根
+        // 优化, 优先将小的合并进入大的集合
+        if(root_x1 > root_x2)
+            std::swap(root_x1, root_x2);
         if(root_x1 != root_x2)
         {
             _ufs[root_x1] += _ufs[root_x2];
@@ -26,11 +28,19 @@ public:
         
     }
     // 获取根
-    int findRoot(int x) const
+    // 优化，我们可以在findRoot进行路径合并
+    int findRoot(int x) 
     {
         auto tmp = x;
         while(_ufs[tmp] >= 0) tmp = _ufs[tmp];
 
+        auto t = x;
+        while(t != tmp)
+        {
+            int s = t;
+            t = _ufs[t];
+            _ufs[s] = tmp;
+        }
         return tmp; 
     }
     // 是否在一个集合里面

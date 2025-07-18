@@ -3,6 +3,11 @@
 #include <vector>
 #include <map>
 
+#define __GRAPH_TABLE__
+// 领接矩阵
+
+#ifdef __GRAPH_MATRIX__
+
 template <class V,class W,W MAX_W = __INT32_MAX__, bool Direction = false> 
 class Graph
 {
@@ -55,3 +60,20 @@ private:
     std::map<V,int> _indexMap;
     std::vector<std::vector<W>> _matrix;
 };
+
+#endif
+
+
+#ifdef __GRAPH_TABLE__
+
+// 领接表
+
+class Graph
+{
+public:
+
+    
+private:
+};
+
+#endif
