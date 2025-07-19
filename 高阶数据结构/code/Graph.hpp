@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include "UnionFindSet.hpp"
 #define __GRAPH_MATRIX__
 // 领接矩阵
 
@@ -12,6 +13,7 @@ template <class V,class W,W MAX_W = __INT32_MAX__, bool Direction = false>
 class Graph
 {
 public:
+    using Self = Graph<V,W,MAX_W,Direction>;
     Graph(const V* array, int n)
     {
         for(int i = 0;i < n;i++)
@@ -46,12 +48,24 @@ public:
         else _matrix[index1][index2] = w;
     }
 
+    void addEdgeByPos(size_t src, size_t dst, const W& w)
+    {
+        // 判断数据是否合理
+       
+        // 添加边
+        if(!Direction)
+        {
+            _matrix[src][dst] = _matrix[dst][src] = w; 
+        }
+        else _matrix[src][dst] = w;
+    }
     void printMatrix() const 
     {
         for(auto& row : _matrix)
         {
             for(auto val : row)
-                std::cout << val << " ";
+                if(val != MAX_W) std::cout << val << " ";
+                else std::cout << "* ";
             std::cout << std::endl;
         }
         
@@ -115,6 +129,63 @@ public:
         std::vector<bool> used(_vertexs.size(), false);
         DFSHelper(_indexMap[val], used);
     }
+
+    struct Edge
+    {
+        Edge(int src,int dst,int wage) : 
+            _src(src), _dst(dst), _wage(wage)
+        {}
+        int _src;
+        int _dst;
+        W _wage;
+        bool operator>(const Edge& edge) const 
+        {
+            return _wage > edge._wage;
+        }
+    };
+
+    // 通过KrusKal算法构建最小生成树
+    W KrusKal(Self& tree)
+    {
+        std::priority_queue<Edge,std::vector<Edge>,std::greater<Edge>> pq;
+        // 
+        int n = _vertexs.size();
+        for(int i = 0;i < n;i++)
+        { 
+            for(int j = 0;j < n;j++)
+            {
+                if(i < j && _matrix[i][j] != MAX_W)
+                    pq.push({i, j, _matrix[i][j]});
+            }
+        }
+        UnionFindSet ufs(n);
+        // 通过KrusKal算法选出n - 1条边
+        int size = 0;
+        W totalW = W();
+        while(pq.size())
+        {
+            Edge min = pq.top();
+            pq.pop();
+            
+            if(!ufs.isInOneSet(min._src,min._dst))
+            {
+                tree.addEdgeByPos(min._src,min._dst,min._wage);
+                ufs.Union(min._src,min._dst);
+                ++size;
+                totalW += min._wage;
+            }
+        }
+        // 判断是否构成最小生成树
+        if(size == n - 1)
+        {
+            return totalW;
+        }
+        else 
+        {
+            return W();
+        }
+        return W();
+    }   
 private:
     std::vector<V> _vertexs;
     std::map<V,int> _indexMap;
