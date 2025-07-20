@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include <set>
 #include "UnionFindSet.hpp"
 #define __GRAPH_MATRIX__
 // 领接矩阵
@@ -186,6 +187,31 @@ public:
         }
         return W();
     }   
+
+    W Prime(Self& tree,const V& begin)
+    {   
+        if(_indexMap.count(begin) == false)
+        {
+            throw std::invalid_argument("错误的输入");
+            return W();
+        }
+
+        auto index = _indexMap[begin];
+        tree._vertexs = _vertexs;
+        tree._indexMap = _indexMap;
+        tree._matrix = _matrix;
+        size_t n = _vertexs.size();
+        for(size_t i = 0;i < n;i++)
+            tree._matrix.resize(n, MAX_W);
+        // prime算法的本质将原来的看做两块
+        std::set<int> X_set;
+        std::set<int> Y_set; 
+        X_set.insert(index);
+        for(size_t i = 0;i < n;i++)
+            if(i != index) Y_set.insert(i);
+        //
+        
+    }
 private:
     std::vector<V> _vertexs;
     std::map<V,int> _indexMap;
