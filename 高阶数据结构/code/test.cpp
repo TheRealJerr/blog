@@ -53,10 +53,9 @@ void TestGraphMinTree()
     Graph<char, int> kminTree(str,strlen(str));
     std::cout << "Kruskal:" << g.KrusKal(kminTree) << std::endl;
     kminTree.printMatrix();
-    kminTree.BFS('b');
-    // Graph<char, int> pminTree;
-    // std::cout << "Prim:" << g.Prim(pminTree, 'a') << endl;
-    // pminTree.Print();
+    Graph<char, int> pminTree(str,strlen(str));
+    std::cout << "Prim:" << g.Prime(pminTree, 'a') << std::endl;
+    pminTree.printMatrix();
 }
 
 auto main() -> int

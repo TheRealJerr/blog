@@ -4,6 +4,7 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <unordered_set>
 #include "UnionFindSet.hpp"
 #define __GRAPH_MATRIX__
 // 领接矩阵
@@ -187,7 +188,8 @@ public:
         }
         return W();
     }   
-
+    
+    // Prim算法
     W Prime(Self& tree,const V& begin)
     {   
         if(_indexMap.count(begin) == false)
@@ -202,7 +204,7 @@ public:
         tree._matrix = _matrix;
         size_t n = _vertexs.size();
         for(size_t i = 0;i < n;i++)
-            tree._matrix.resize(n, MAX_W);
+            tree._matrix[i].resize(n, MAX_W);
         // prime算法的本质将原来的看做两块
         std::set<int> X_set;
         std::set<int> Y_set; 
@@ -210,7 +212,45 @@ public:
         for(size_t i = 0;i < n;i++)
             if(i != index) Y_set.insert(i);
         //
+        std::priority_queue<Edge,std::vector<Edge>,std::greater<Edge>> minque;
+        for(size_t i = 0;i < n;i++)
+            if(_matrix[index][i] != MAX_W)
+                minque.push(Edge(index,i,_matrix[index][i]));
         
+        size_t count = 0;
+        W res = W();
+        while(!minque.empty())
+        {
+            Edge edge = minque.top();
+            minque.pop();
+            // 这里应该处理一下判定环
+            if(X_set.count(edge._dst))
+            {
+                std::cout << "构成环" << std::endl;
+                std::cout << _vertexs[edge._src]<< " -> " << _vertexs[edge._dst] << " wage:" << edge._wage << std::endl; 
+            }
+
+            else 
+            {
+                tree.addEdgeByPos(edge._src,edge._dst,edge._wage);
+                X_set.insert(edge._dst);
+                Y_set.erase(edge._dst);
+
+                count++;
+                res += edge._wage;
+                std::cout << _vertexs[edge._src]<< " -> " << _vertexs[edge._dst] << " wage:" << edge._wage << std::endl; 
+                
+                if(count == n - 1) break;
+
+                for(size_t i = 0;i < n;i++)
+                    if(_matrix[edge._dst][i] != MAX_W && !X_set.count(i))
+                        minque.push(Edge(edge._dst,i,_matrix[edge._dst][i]));
+            }
+                
+        }
+
+        if(count == n - 1) return res;
+        else return W();
     }
 private:
     std::vector<V> _vertexs;
