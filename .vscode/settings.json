@@ -1,3 +1,6 @@
 {
-    "cmake.sourceDirectory": "/home/hrj/projects/blog/test"
+    "cmake.sourceDirectory": "/home/hrj/projects/blog/test",
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }

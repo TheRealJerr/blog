@@ -116,3 +116,50 @@ poll 中监听的文件描述符数目增多时和select函数一样poll 返回�
 
 ### epoll
 
+![alt text](image-7.png)
+
+> 为了处理大量句柄而进行改进的poll
+> epoll很多时候叫做epoll模型, 提供了一组构建epoll模型的函数, 面相对象, 而不是和select和poll一样更多的是面向过程。
+
+```c
+// 创建一个epoll模型
+int epoll_create(int size)
+
+int epoll_ctl(int epfd, int op,int fd,struct epoll_event* event);
+
+```
+`epoll_ctl`提供操作epoll模型的各种参数
+
+- **op** : 操作类型
+    - EPOLL_CTL_ADD : 注册新的fd
+    - EPOLL_CTL_MOD : 修改fd的事件
+    - EPOLL_CTL_DEL : 删除fd
+
+- **struct epoll_event**
+
+    ![alt text](image-6.png)
+
+    events的几个宏(我们主要关心读和写)
+    - EPOLLIN
+    - EPOLLOUT
+
+#### **epoll时间就绪**
+```c
+int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
+```
+
+## **基于epoll模型实现的reactor反应堆模式**(推广,epoll的使用场景)
+
+[reactor反应堆模式](https://github.com/TheRealJerr/reactorModule)
+
+## 总结`select poll epoll的优缺点`
+
+- select : select适合简单的应用场景(当我们需要管理的文件描述符比较少的时候), select是一个简单的不错的选择, 但是select频繁的将数据从内核到用户之间频繁拷贝, 当涉及到的描述符多了之后, 就会显著降低效率
+
+- poll : poll在select的基础之上进行了改进, 只能说在设计上更加的方便的, 但是轮询和用户内核之间的拷贝问题没有得到根本的解决
+
+- epoll : epoll模型是基于红黑树和嵌入式链表的设计的高效数据结构模型, 通过设置回调函数以及红黑树存储的机制, 使得通知用户层和拷贝进入内核的开销都得到了显著的降低(避免很多无用的拷贝)
+
+
+
+
