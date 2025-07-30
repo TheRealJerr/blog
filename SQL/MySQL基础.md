@@ -217,3 +217,45 @@ alter table table_name change
 ```SQL
 drop table table_name;
 ```
+
+## MySQL的数据类型
+
+### 数值类类型
+
+|类型|字节|
+|---|---|
+|TINYINT|1|
+|SMALLINT|2|
+|MEDIUMINT|3|
+|INT|4|
+|BIGINT|8|
+
+如果我们在类型后面加上unsigned, 就表示无符号整数类型。
+
+**MySQL不需保证数据的完整性,因此不能接受数据的截断(靠扩数据越界，等等), 这同时保证了，只要插入成功, 那么数据一定成功插入了**
+
+
+### bit类型
+
+bit(M), M表示字的个数, 范围[1,64]。 
+
+我们可以通过一个bit表示状态, 或者通过多个bit来表示位图。
+
+### float类型
+
+> float[(m,d)] [unsigned]
+> m表示整个长度, d表示小数部分的长度
+> 比如m = 2, d = 2表示从[-99.99,99.99]
+
+### decimal
+
+float和decimal之间存在精度之间的不同, float会自作聪明进行精度变化(比如四舍五入), decimal就不会, 相比来说, decimal的精度高于float
+
+### 字符串类型
+
+**MySQL这里是以字符为基本单位, 区别于C++通过字节为基本单位**
+
+1. char(L), 固定长度字符串, L表示最大的字符的长度, 最大长度为255。
+
+2. varchar(L), 变长字符串, 最大的长度为65535。
+
