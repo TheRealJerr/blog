@@ -1,0 +1,2 @@
+/home/hrj/projects/blog/build/CMakeFiles/edit_cache.dir
+/home/hrj/projects/blog/build/CMakeFiles/rebuild_cache.dir
