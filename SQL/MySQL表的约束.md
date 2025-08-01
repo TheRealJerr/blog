@@ -23,5 +23,14 @@
 
 - default和not null不冲突而是互相补充。
 
+- 如果我们默认设置了not null， 没有默认的default(因为默认的default就是null)
+
+## comment(列描述)
+
+> 针对表中的内容进行描述(类似于Java/C++中的注释)
+
+## zerofill(根据位数补零)
+
+> zerofill的作用就是将我们忽略的0进行填充, 比如我们int(10), 如果只是数据1并且设置了zerofill, 就会将高位设置成为0, 0000000001。
 
 
