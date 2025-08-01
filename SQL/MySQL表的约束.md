@@ -34,3 +34,60 @@
 > zerofill的作用就是将我们忽略的0进行填充, 比如我们int(10), 如果只是数据1并且设置了zerofill, 就会将高位设置成为0, 0000000001。
 
 
+
+## 主键(primary key)
+
+> 主键要么只有一个, 要么没有, 逐渐就是这张表中最重要的一项, 类似于迭代器的作用, 逐渐必须是唯一的。
+
+```sql
+create table if not exists test_key(
+    id int unsigned primary key comment "学号"
+);
+```
+
+**(删除主键), 不会删除这一列, 但是会删除主键约束**
+
+```sql
+alter table table_name drop primary key
+```
+
+## 复合主键, 多个元素共同唯一(同时相同才会冲突)
+
+```sql
+create table Info (
+    id int unsigned comment "编号",
+    course_id int unsigned comment "课程编号",
+    score tinyint unsigned comment "课程成绩",
+    primary key(id,course_id)
+);
+```
+
+## 自增长(auto_increment)
+
+自动增长的约束， 他能够实现自动增长，当我我们也可以手动的插入, 相当于自动的设置DEFAULT值。每次自动增长
+
+```bash
++-------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Info  | CREATE TABLE `Info` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int unsigned NOT NULL COMMENT '课程编号',
+  `score` tinyint unsigned DEFAULT NULL COMMENT '课程成绩',
+  PRIMARY KEY (`id`,`course_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3         |
++-------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+```
+
+我们可以手动设置`AUTO_INCREMET=?`来设置自增的开始
+
+## 唯一键
+
+```sql
+create table stu(
+  id char(20) unique comment "学生的的唯一键",
+  name varchar(20) not null
+);
+```
+
+> 唯一键可以冲突(多个项相同), 并且唯一键可以为NULL
+
