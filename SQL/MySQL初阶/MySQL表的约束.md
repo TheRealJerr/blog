@@ -80,7 +80,7 @@ create table Info (
 
 我们可以手动设置`AUTO_INCREMET=?`来设置自增的开始
 
-## 唯一键
+## 唯一键(unique)
 
 ```sql
 create table stu(
@@ -89,5 +89,29 @@ create table stu(
 );
 ```
 
-> 唯一键可以冲突(多个项相同), 并且唯一键可以为NULL
+> 比如每个学生都有自己的电话号码的邮箱, 但是显然学号才是主键, 所以对于电话号码和邮箱都应该设置成为`unique`, 对于上层我们可以避免插入的时候登录学生信息错误(电话号码和邮箱重复)
 
+## 外键 (foreign key)
+
+> 外键强调表和表之间的关联和约束。
+> 主要定义主表和从表之间的关联关系
+> 外键的本质是如果表和表之间存在关系的时候, 外键可以帮助我们添加约束
+
+
+```bash
+id  |  name  |  class_id  |
+100 |  张三   |     10     |
+101 |  李四   |     20     |
+
+class_id |  class_name |
+    10   |      一班    |
+    20   |      二班    |
+
+```
+
+class_id某种意义上就算外键。
+
+
+```sql
+foreign key(class_id) references other_table(id)
+```
