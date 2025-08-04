@@ -110,3 +110,48 @@ truncate from table_name [colume...]
 
 **去重表中的数据**
 
+
+## 创建一个相似的表
+
+```sql
+create table new_table_name like old_table_name;
+```
+
+## 聚合查询
+
+- count : 统计有多少行
+    ```sql
+    select count(*) from table_name
+    ```
+
+- sum : 进行聚合(只能是数字)
+    **求平均分**
+    ```sql
+    select sum(grade)/count(grade) from stu_grade;
+    ```
+
+- avg : 求出平均值(只能是数字)
+
+- max : 数字最大值(只能是数字)mo
+
+- min : 数字最小值(只能是数字)
+
+## 分组(group by字句)
+
+> 提供根据某一列进行分组的需求
+
+group by 表示你要通过那一列进行分组
+
+```sql
+select max(sal) as 最高, avg(sal) 平均 from table_name group by 列名 
+```
+
+## having
+
+> 对聚合的数据进行条件筛选
+
+**having和where的区别**:
+
+- `where`是对具体的任意列进行条件筛选
+
+- `having`是对分组聚合之后的结果进行条件少选
