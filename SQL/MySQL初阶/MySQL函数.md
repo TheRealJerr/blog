@@ -1,6 +1,6 @@
-# MySQL函数
+# **MySQL函数**
 
-## 日期函数
+## **日期函数**
 
 - current_date() : 当时的日期
 
@@ -17,7 +17,7 @@
     - date_add(now(), interval num (day/minute/hour/second))
 - now() : 当前的时间
 
-## 字符串函数
+## **字符串函数**
 
 - charset(str) : 返回字符串的字符集(编码格式)
 
@@ -42,4 +42,40 @@
 - substr(str, position, [,length])
 
 - ltrim, rtrim : 从左或者从右剔除空格
+
+## **数学函数**
+
+- abs(number) : 求绝对值
+
+- bin(number) : 转二进制
+
+- hex(number) : 16进制
+
+- conv(number,old_base,new_base);
+
+- ceiling(number) : 向上取整
+
+- floor(number) : 向下取整
+
+- format(number, decimal_places) : 表示确定精度
+
+- mod(number, mod_num) : 取模
+
+- random() : 生成随机数([0.0,1.0])
+
+**C/C++的取整方式是0向取整，也就是直接抹去小数**
+
+
+## **常用函数**
+
+
+- md5: 进行hash加密的函数, 我们可以通过用户上传的密码进行修改。
+
+- password : 设置密码
+
+- ifnull(val1,va2) :
+    if val1 == null return val2
+    else return val1
+
+
 

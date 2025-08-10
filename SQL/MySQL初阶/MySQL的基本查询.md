@@ -155,3 +155,5 @@ select max(sal) as 最高, avg(sal) 平均 from table_name group by 列名
 - `where`是对具体的任意列进行条件筛选
 
 - `having`是对分组聚合之后的结果进行条件少选
+
+
