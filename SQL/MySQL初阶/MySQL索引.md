@@ -49,3 +49,26 @@ MySQL会有默认主键
 
 ## 聚簇索引和非聚簇索引
 
+1. 对于innodb来说，默认存储主键索引，如果添加新的索引，新索引的叶子节点存储的是对应的主键映射，这种机制叫做回表查询的机制
+
+2. 对于myisam, 就是新构建一个新索引的B+树
+
+
+## 索引操作
+
+```sql
+alter table table_name index(table_line)
+
+alter table table_name drop index table_line
+```
+
+**那些情景添加索引比较好**:
+
+1. 很少修改
+
+2. 经常在where字句中出现
+
+3. 唯一性比较好
+
+4. 比较频繁作为查询条件的索引
+
