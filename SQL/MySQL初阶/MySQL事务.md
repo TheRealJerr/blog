@@ -67,8 +67,34 @@ set autocommit
 
 
 
+## 隔离性
+
+> 在事务中, 隔离是必要的, 
+
+**隔离级别**
+
+- 读未提交: 没有任何的隔离性, 一边的事务处于未提交的状态，另一边也能看见
+
+    可能出现脏读的情况, 一个事务读到了另一个事务的中间态。 
+
+- 读提交: 只能看见提交后的结果, 是一般的数据库隔离级别
+
+    可能出现不可重复读的问题。
+    
+
+- 可重复读: 
 
 
+**查看隔离性**
 
+```sql
+select @@global.transaction_isolation; ## 查看默认隔离级别
 
+select @@session.transaction_isolation; ## 查看当前的隔离级别
+```
+**设置隔离**
+
+```sql
+set [session | global] transaction isolation level { read uncommitted | read committed | repeatable read | serializable } 
+```
 
