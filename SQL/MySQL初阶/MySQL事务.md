@@ -98,3 +98,33 @@ select @@session.transaction_isolation; ## 查看当前的隔离级别
 set [session | global] transaction isolation level { read uncommitted | read committed | repeatable read | serializable } 
 ```
 
+## ReadView类 class ReadView
+
+- m_ids : 当前活跃的事务
+
+- up_limit_id: 记录m_ids里面ID最小的ID
+
+- low_limit_id : 下一次分配事务的事务ID
+
+- create_trx_id : 创建ReadView的事务ID
+
+## 讨论read committed和repeatable read
+
+场景:
+
+|事务一|事务二|事务三|事务四|
+|----|-----|------|------|
+|...|...|...|...|
+
+- 事务四修改张三(name)为李四
+
+- 事务二执行快照读, 数据库生成`ReadView`视图
+    > m_ids = { 1 , 3 }  
+    > up_limit_id = 1  
+    > low_limit_id = 5  
+    > create_trx_id = 2  
+ 
+
+  
+
+    
