@@ -124,7 +124,7 @@ set [session | global] transaction isolation level { read uncommitted | read com
     > low_limit_id = 5  
     > create_trx_id = 2  
  
-
+**RC和RR的本质区别**
   
 
     
