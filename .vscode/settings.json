@@ -3,6 +3,7 @@
     "files.associations": {
         "iostream": "cpp",
         "ostream": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "variant": "cpp"
     }
 }

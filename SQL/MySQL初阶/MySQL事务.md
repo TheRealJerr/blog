@@ -127,4 +127,6 @@ set [session | global] transaction isolation level { read uncommitted | read com
 **RC和RR的本质区别**
   
 
-    
+- 在RR级别下, 第一次快照读会生成一个ReadView, 后续的所有的修改都是基于这个ReadView。
+
+- 在RC级别下, 没有快照读都会生成一个最新的ReadView。

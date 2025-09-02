@@ -26,7 +26,7 @@ systemctl restart mysqld
 ### 什么是数据库
 
 > MySQL是一个网络服务, 默认是3306
-> mysqld是服务端, mysql是客户端
+> mysqld是服务端, mysql是客户端f
 > mysql是一套给我们提供数据存取服务的网络程序
 
 **数据库**
