@@ -20,6 +20,7 @@ void testRedis()
         server->keys("*",std::back_inserter(output));
         for(auto& str : output)
             std::cout << str << std::endl;
+        server->ping();
     } catch(const sw::redis::Error& e)
     {
         std::cout << "redis Error:" << e.what() << std::endl;
