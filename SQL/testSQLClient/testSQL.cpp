@@ -66,6 +66,12 @@ void linkTableSql(Session_t& session)
     
 }
 
+void testSQLCommand(Session_t& session)
+{
+    Schema schema = session->getSchema("user_db");
+    Table tb = schema.getTable("account");
+
+}
 auto main() -> int
 {
     Session_t session = createSession("localhost", "hrj", "hrj756357", "user_db");
