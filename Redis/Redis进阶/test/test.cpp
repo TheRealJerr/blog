@@ -1,20 +1,33 @@
-#include <unistd.h>
 #include <iostream>
-#include <sw/redis++/redis++.h>
-#include <set>
-#include <thread>
-// Redis-plus-plus的作者, 可以直接展开这个命名空间
-using namespace sw;
+#include <functional>
+#include <string>
+#include <vector>
+#include <unordered_map>
 
-void handler(int num)
+#include <boost/regex.hpp>
+
+// 判断一个vector<string>中符合正则表达式的元素集合
+std::vector<std::string> filter_by_regex(const std::vector<std::string>& vec, const std::string& regex_str)
 {
-    for(int i = 0;i < num;i++)
-        std::cout << i << std::endl;
+    std::vector<std::string> result;
+    boost::regex regex(regex_str);
+    for (const auto& str : vec)
+    {
+        if (boost::regex_match(str, regex))
+        {
+            result.push_back(str);
+        }
+    }
+    return result;
 }
-auto main() -> int
+auto main() -> int 
 {
-    sw::redis::Redis redis_client("tcp://localhost:6379");
-    std::thread(handler, 5).join();
-    std::cout << std::this_thread::get_id()
-    return 0;    
+    std::vector<std::string> vec = {"hello", "world", "redis", "cpp", "mysql"};
+    std::string regex_str = ".*redis.*";
+    auto result = filter_by_regex(vec, regex_str);
+    for (const auto& str : result)
+    {
+        std::cout << str << std::endl;
+    }
+    return 0;
 }

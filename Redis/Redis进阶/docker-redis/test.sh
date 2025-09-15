@@ -1,0 +1,3 @@
+do\
+	ls
+done
