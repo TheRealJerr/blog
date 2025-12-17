@@ -1,13 +1,8 @@
-#include <type_traits>
-#include <iostream>
-#include <vector>
 
-// 是否支持 operator+
-// 标准的容器
-class alloctor
-{
-public:
+import hello;
+import <iostream>;
 
-private:
-    
-};
+int main() {
+    std::cout << get_message() << std::endl;
+    return 0;
+}
