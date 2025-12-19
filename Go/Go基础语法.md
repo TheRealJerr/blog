@@ -215,3 +215,306 @@ func Print(a ...interface{}) (n int, err error)
 ```go
 value, ok := x.(T)
 ```
+只是值得注意的是这里的T需要明确是指针还是类型
+
+
+### Go语言中的error
+
+Go语言中error是接口类型, 我们可以自定义error类型, 然后通过实现error接口来返回错误信息.
+
+### Go语言中的defer
+
+类似于C++中的析构函数, defer语句会在函数执行完毕后执行, 但是defer语句的执行顺序是先进后出, 也就是说先调用的defer语句最后才会执行.Raii
+
+# Go进阶语法
+
+## 多协程调用
+
+go语言不像C++, 支持多进程, 多线程, 协程, go本质只支持协程的概念, 因此go语言的并发模型就是基于协程的并发模型.
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func myGoroutine(name string, wg *sync.WaitGroup) {
+    defer wg.Done()
+
+    for i := 0; i < 5; i++ {
+       fmt.Printf("myGroutine %s\n", name)
+       time.Sleep(10 * time.Millisecond)
+    }
+}
+
+func main() {
+    var wg sync.WaitGroup
+    wg.Add(2)
+
+    go myGoroutine("goroutine1", &wg)
+    go myGoroutine("goroutine2", &wg)
+
+    wg.Wait()
+}
+```
+
+## 通道channel
+
+channel是go语言中用于协程间通信的一种机制, 它类似于管道, 但是管道只能单向传输数据, 而channel可以双向通信。
+
+```go
+var channel_name chan channel_type
+var channel_name [size]chan channel_type  // 声明一个channel，其容量大小为size
+```
+
+声明了管道, 我们还需要对管道开辟空间
+
+```go
+channel_name := make(chan channel_type)
+channel_name := make(chan channel_type, size)
+```
+
+### 发送和接收
+
+```go
+channel_name <- value
+value := <-channel_name
+```
+
+### 关闭channel
+
+```go
+close(channel_name)
+```
+
+关闭channel后, 再向管道发送数据会导致panic异常.
+
+### 判定读取
+
+```go
+value, ok := <-channel_name
+if ok{
+	fmt.Println("读取成功")
+}else{
+	fmt.Println("读取失败")
+}
+```
+
+### for range读取
+
+我们当然可以基于for range来读取channel, 但是如果channel中没有数据, 那么for range会一直阻塞, 因此我们需要设置超时时间, 或者使用select来读取channel.
+
+### chan实现锁的机制
+
+本质利用chan内部的锁
+
+
+
+## sync
+
+go语言倡导通信共享内存而不是共享内存通信, 对于传统的语言都是通过共享内存配合互斥锁实现的通信, go提供对应的机制在sync包中
+
+### sync.WaitGroup
+
+go通过WaitGroup实现任务的同步和等待, 我们可以将多个协程的执行顺序通过WaitGroup来控制.
+
+```go
+
+package main
+
+import (
+   "fmt"
+   "sync"
+)
+
+var wg sync.WaitGroup
+
+func myGoroutine() {
+   defer wg.Done()
+   fmt.Println("myGoroutine!")
+}
+
+func main() {
+   wg.Add(10)
+   for i := 0; i < 10; i++ {
+      go myGoroutine()
+   }
+   wg.Wait()
+   fmt.Println("end!!!")
+}
+```
+
+### sync.Once
+
+类似于C++中的单例模式, 我们可以使用sync.Once来保证某个函数只执行一次.
+```go
+// 声明配置结构体Config
+type Config struct{}
+
+var instance *Config
+var once sync.Once     // 声明一个sync.Once变量
+
+// 获取配置结构体
+func InitConfig() *Config {
+   once.Do(func(){
+      instance = &Config{}
+   })
+   return instance
+}
+```
+
+### sync.Mutex
+
+- Lock和defer Unlock配合使用
+
+- 锁的复制会复制锁的状态
+
+### sync.Map
+
+go语言中map的并发读写问题, 我们可以使用sync.Map来解决这个问题.
+
+
+### sync.Atomic
+
+cpu保证原子操作的库
+
+### sync.pool
+
+go语言中提供的一种对象池技术, 它可以减少对象的创建和销毁, 提升性能. 由于对象池的对象的生命周期由gc控制, 具体的时间是不可预测的, 因此带状态的对象不适合使用对象池.
+
+## select
+
+go语言中提供的一种多路复用机制, 它可以同时监听多个channel, 并根据channel的状态来选择执行相应的case, 类似于switch语句. 类似于Linux中的epoll, 但是go语言的select更加灵活, 它可以监听多个channel, 也可以监听多个case.
+
+```go
+select {
+    case <- channel1:     // 如果从channel1读取数据成功，执行case语句 
+        do ...   
+    case channel2 <- 1:   // 如果向channel2写入数据成功，执行case语句 
+        do ...          
+    default:              // 如果上面都没有成功，进入default处理流程
+        do ...
+}
+```
+
+如果没有default, 当前的协程会阻塞
+
+## Context
+
+```go
+type Context interface {
+   Deadline() (deadline time.Time, ok bool)
+   Done() <-chan struct{}
+   Err() error
+   Value(key interface{}) interface{}
+}
+```
+
+- Deadline : 设置context被取消的时间截止日期
+
+- Done : 返回一个只读的channel, 当context被取消时, 这个channel会被关闭, 通知调用方
+
+- Err : 返回一个error, 用来传递context的错误信息
+
+- Value : 返回一个interface{}类型的value, 用来传递上下文信息
+
+context的作用
+
+- 用于并发控制，控制协程优雅的退出
+
+- 上下文信息的传递，context就是用来在父子goroutine直接进行值传递以及发送cancel信号的一种机制
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	go Watch(ctx, "goroutine1")
+	go Watch(ctx, "goroutine2")
+
+	time.Sleep(6 * time.Second) // 让goroutine1和goroutine2执行6s
+	fmt.Println("end watching!!!")
+	cancel() // 通知goroutine1和goroutine2关闭
+	time.Sleep(1 * time.Second)
+}
+
+func Watch(ctx context.Context, name string) {
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Printf("%s exit!\n", name) // 主goroutine调用cancel后，会发送一个信号到ctx.Done()这个channel，这里就会收到信息
+			return
+		default:
+			fmt.Printf("%s watching...\n", name)
+			time.Sleep(time.Second)
+		}
+	}
+}
+
+```
+
+## 定时器
+
+### timer
+
+```go
+type Timer struct {
+    C <-chan Time
+    r runtimeTimer
+}
+```
+
+```go
+func test2() {
+	timer := time.NewTimer(time.Second * 2)
+	<-timer.C
+	fmt.Println("timeout")
+}
+
+func main() {
+	test2()
+}
+```
+
+```go
+func (t *Timer) Stop() bool
+```
+
+- 返回值是true: 在超时之前停止
+
+- 在超时之后停止
+
+```go
+func(t *Timer) Reset(d time.Duration) bool
+```
+
+```go
+func AfterFunc(d Duration, f func()) *Timer
+```
+到达时间调用回调函数
+
+
+### Ticker
+
+```go
+type Ticker struct {
+   C <-chan Time // The channel on which the ticks are delivered.
+   r runtimeTimer
+}
+```
+
+Ticker可以定时触发，每隔一段时间触发一次, 类似于定时器
+
+## Go的反射
+
+大量的高级语言都提供的反射的功能, 比如Java Python Ruby等, go语言也提供了反射的功能, 我们可以通过反射来动态的创建对象, 调用方法, 修改变量的值. 反射就是程序运行时能够检测自身和修改自身的一种能力
+
